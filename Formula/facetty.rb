@@ -1,25 +1,25 @@
 class Facetty < Formula
   desc "Video calls in your terminal, drawn in ASCII"
   homepage "https://github.com/KristalAlfred/facetty"
-  version "0.2.0"
+  version "0.2.1"
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.0/facetty-aarch64-apple-darwin.tar.xz"
-      sha256 "fdb83f5ebf0a9853709f282ca2ed13f770aef044bb7009e5d3210bd30ac5ff8e"
+      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.1/facetty-aarch64-apple-darwin.tar.xz"
+      sha256 "3c767d4accee80106875a821824c17554af07a523618bc942bd3a89a2ebee5f0"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.0/facetty-x86_64-apple-darwin.tar.xz"
-      sha256 "f39c9455104bbe19ed54f92546ce55d407e33f99d8ada178e2aad59411f860a9"
+      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.1/facetty-x86_64-apple-darwin.tar.xz"
+      sha256 "9905701a242ac7863b1227745c07e245af94e1a7af80fe2bdfdf09a30bf72184"
     end
   end
   if OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.0/facetty-aarch64-unknown-linux-gnu.tar.xz"
-      sha256 "9d467b44da8fcc5b417064d45f60535b55266567c308933c834b1fe748279f68"
+      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.1/facetty-aarch64-unknown-linux-gnu.tar.xz"
+      sha256 "9da78cacb3fcc9fedd436b7fc03e2468dec88f10daee47cd1a6f11b26651210d"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.0/facetty-x86_64-unknown-linux-gnu.tar.xz"
-      sha256 "3b3e7a47e4fc8caadcd7e43dab5eac6849325b854abba8468736acd39e19b882"
+      url "https://github.com/KristalAlfred/facetty/releases/download/v0.2.1/facetty-x86_64-unknown-linux-gnu.tar.xz"
+      sha256 "d623b8029f57d98761ee46078ff761dd5ae0478845118f6880662e423a687322"
     end
   end
   license "MIT"
