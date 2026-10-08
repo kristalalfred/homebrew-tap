@@ -5,21 +5,21 @@ class Facetty < Formula
   if OS.mac?
     if Hardware::CPU.arm?
       url "https://github.com/KristalAlfred/facetty/releases/download/v0.1.0/facetty-aarch64-apple-darwin.tar.xz"
-      sha256 "ca38582149816b5f51bfc05d61939b2cff27fcd2f029f5ba0fe5fd3aed8a16c9"
+      sha256 "e8bb15a5c22fedf6e1caa6359016377ae16c92a8182553850f1923fb1f64c0a3"
     end
     if Hardware::CPU.intel?
       url "https://github.com/KristalAlfred/facetty/releases/download/v0.1.0/facetty-x86_64-apple-darwin.tar.xz"
-      sha256 "0e1799cd39877f3b3a88c67c77a9aff2f6b1b5606f7b92ad07cafd6835d5a717"
+      sha256 "80824bf681b2577a10554753f77fef7bf61c4da68173c6ac41b345c39868efc1"
     end
   end
   if OS.linux?
     if Hardware::CPU.arm?
       url "https://github.com/KristalAlfred/facetty/releases/download/v0.1.0/facetty-aarch64-unknown-linux-gnu.tar.xz"
-      sha256 "0d686aa48699138c908d1f5675910aa6646e192e853684a3f73d0275e2bc449a"
+      sha256 "f039548048a8dbee3c9e3d52643626d49c2876e5d24d9a6b9946f75a65fd794d"
     end
     if Hardware::CPU.intel?
       url "https://github.com/KristalAlfred/facetty/releases/download/v0.1.0/facetty-x86_64-unknown-linux-gnu.tar.xz"
-      sha256 "414cd1be23c38a1bbc78b9b6bc2ea04f8f416b952839a562dc406d89e2e116dc"
+      sha256 "bcdf2e3a158e34df6e7fbfa2b554ae519c5ca4170eb630f6a78d9fe795d1838c"
     end
   end
   license "MIT"
