@@ -1,0 +1,46 @@
+name: test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - Formula/exo.rb
+      - Formula/ramp.rb
+      - Formula/ronna.rb
+      - scripts/**
+      - .github/workflows/test.yml
+
+permissions:
+  contents: read
+
+jobs:
+  release-tools:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.13"
+      - run: python3 -m unittest discover -s scripts -p '*test.py'
+
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-14, macos-15-intel, ubuntu-22.04, ubuntu-22.04-arm]
+    runs-on: ${{ matrix.runner }}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: Homebrew/actions/setup-homebrew@fccef3b26268fc4a788fd7ad7c189f3a105cbf13
+      - name: Install public binaries
+        run: brew install kristalalfred/tap/ramp kristalalfred/tap/ronna
+      - name: Verify installed formulae
+        run: |
+          brew test kristalalfred/tap/exo
+          brew test kristalalfred/tap/ramp
+          brew test kristalalfred/tap/ronna
+          brew audit --strict --os="${{ runner.os == 'macOS' && 'macos' || 'linux' }}" kristalalfred/tap/exo kristalalfred/tap/ramp kristalalfred/tap/ronna

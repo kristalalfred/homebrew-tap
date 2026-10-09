@@ -1,0 +1,26 @@
+{
+  "project": "ramp",
+  "version": "0.1.0",
+  "source_revision": "b5642c9df1c3f095589a51f1ad168a327dc70c00",
+  "exo_revision": "f569c585bb97a2fff63e338b856d127fc0c40217",
+  "source_tag": "homebrew-v0.1.0",
+  "release_tag": "ramp-v0.1.0",
+  "assets": {
+    "aarch64-apple-darwin": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-aarch64-apple-darwin.tar.gz",
+      "sha256": "834d3bb084102b4240727a99d5e67b8c350c18464b596f6a81ba7a74fba43567"
+    },
+    "x86_64-apple-darwin": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-x86_64-apple-darwin.tar.gz",
+      "sha256": "8f2e6296fc5acf70f2b6272192562472220e1c1d666612e8fd934778cc0cb878"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "ddbc377b2dc961a817a91d90ca948fe53cffbb631caef228a3c92a9702ead2f0"
+    },
+    "x86_64-unknown-linux-gnu": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "150ebb10ab551e76fb08e17ff8d6b6e89d8a6a9108a96b84700628a513de6526"
+    }
+  }
+}
