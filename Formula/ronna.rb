@@ -15,6 +15,7 @@ class Ronna < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.0/ronna-x86_64-apple-darwin.tar.gz"
+      version "0.1.0"
       sha256 "1be5faccc94aece5c2ab1f7e05dfae7b7cb8413e6c85edff6e6440699c4f23e9"
     end
   end
@@ -27,6 +28,7 @@ class Ronna < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.0/ronna-x86_64-unknown-linux-gnu.tar.gz"
+      version "0.1.0"
       sha256 "e83a0f2b0aec6ad3b5b315f446dc83161c81b6baf8649cd5a5ef0c957bb206c6"
     end
   end

@@ -13,6 +13,7 @@ class Exo < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/exo-v0.1.0/exo-x86_64-apple-darwin.tar.gz"
+      version "0.1.0"
       sha256 "d230a107d79031632e8aba34019917adf42c9293c08e9c6244f1ce41ae329915"
     end
   end
@@ -25,6 +26,7 @@ class Exo < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/exo-v0.1.0/exo-x86_64-unknown-linux-gnu.tar.gz"
+      version "0.1.0"
       sha256 "19a4d82dc8af4132bba096f9967ce2b29b646e1b5f949038bc307addbc1f08a1"
     end
   end

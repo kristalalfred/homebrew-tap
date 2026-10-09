@@ -173,8 +173,10 @@ def formula(project, version, assets):
             lines.append("")
         for architecture, cpu in (("arm", "aarch64"), ("intel", "x86_64")):
             asset = assets[cpu + "-" + suffix]
-            lines.extend([f"    on_{architecture} do", f'      url "{asset["url"]}"',
-                          f'      sha256 "{asset["sha256"]}"', "    end"])
+            lines.extend([f"    on_{architecture} do", f'      url "{asset["url"]}"'])
+            if architecture == "intel":
+                lines.append(f'      version "{version}"')
+            lines.extend([f'      sha256 "{asset["sha256"]}"', "    end"])
             if architecture == "arm":
                 lines.append("")
         lines.append("  end")

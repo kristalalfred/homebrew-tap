@@ -15,6 +15,7 @@ class Ramp < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-x86_64-apple-darwin.tar.gz"
+      version "0.1.0"
       sha256 "8f2e6296fc5acf70f2b6272192562472220e1c1d666612e8fd934778cc0cb878"
     end
   end
@@ -27,6 +28,7 @@ class Ramp < Formula
 
     on_intel do
       url "https://github.com/kristalalfred/homebrew-tap/releases/download/ramp-v0.1.0/ramp-x86_64-unknown-linux-gnu.tar.gz"
+      version "0.1.0"
       sha256 "150ebb10ab551e76fb08e17ff8d6b6e89d8a6a9108a96b84700628a513de6526"
     end
   end
