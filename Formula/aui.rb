@@ -9,27 +9,27 @@ class Aui < Formula
     depends_on macos: :monterey
 
     on_arm do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.0/aui-aarch64-apple-darwin.tar.gz"
-      sha256 "2c2f37dbdea286a3c32c8da40ddfd050cc802efe6f355b78210100b1a7b8f03e"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.1/aui-aarch64-apple-darwin.tar.gz"
+      sha256 "36e07c51a7c434d7ecf2393ec19895cd5d78cb6b03a32ac4b89dfad6d97af50e"
     end
 
     on_intel do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.0/aui-x86_64-apple-darwin.tar.gz"
-      version "0.1.0"
-      sha256 "40c7e2ff83e7e294e57cf864f9e735f7ac3f8aeb322574cd03b90bd5e3d28ee1"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.1/aui-x86_64-apple-darwin.tar.gz"
+      version "0.1.1"
+      sha256 "37b5bfd5569c1b68fb70dc6d1c15c6ebd9368dd663a5370786d975f2104b9bc8"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.0/aui-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "4a1e99e119b7876a653eebd3fd5634c94de6790f0283de8064c966fd2e25f868"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.1/aui-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "168445a35667efedceaba74f042f99d4d887f1ab40e776386ea5213a3af5bb08"
     end
 
     on_intel do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.0/aui-x86_64-unknown-linux-gnu.tar.gz"
-      version "0.1.0"
-      sha256 "b21a0e4dac7ea656ec6ee323c9e40e0803707c1ac67a0c421dac3a55e086bbd2"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/aui-v0.1.1/aui-x86_64-unknown-linux-gnu.tar.gz"
+      version "0.1.1"
+      sha256 "d34930309d2c21da8cf0f45449cb358bdf604dd713a8090877f5a8ceb936c6b8"
     end
   end
 
