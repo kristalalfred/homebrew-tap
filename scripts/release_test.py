@@ -109,6 +109,31 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn("license :cannot_represent", formula)
             self.assertEqual(json.loads((root / "releases/aui.json").read_text())["release_tag"], "aui-v0.1.0")
 
+    def test_local_archives_must_come_from_the_frozen_revision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "local"
+            source.mkdir()
+            expected = {f"aui-{target}.tar.gz" for target in release.TARGETS}
+            for target in release.TARGETS:
+                archive = self.archive(source, target, "aui")
+                archive.with_name(archive.name + ".sha256").write_text(release.digest(archive) + "  " + archive.name + "\n")
+            destination = root / "build"
+            destination.mkdir()
+            release.local_archives(source, "aui", "a" * 40, destination, expected)
+            self.assertEqual({path.name for path in destination.glob("*.tar.gz")}, expected)
+            with self.assertRaisesRegex(ValueError, "provenance mismatch"):
+                release.local_archives(source, "aui", "c" * 40, destination, expected)
+            with self.assertRaisesRegex(ValueError, "provenance mismatch"):
+                release.local_archives(source, "ronna", "a" * 40, destination, expected)
+            swapped = source / f"aui-{release.TARGETS[1]}.tar.gz"
+            self.archive(root, release.TARGETS[0], "aui").replace(swapped)
+            with self.assertRaisesRegex(ValueError, "provenance mismatch"):
+                release.local_archives(source, "aui", "a" * 40, destination, {swapped.name})
+            (source / f"aui-{release.TARGETS[0]}.tar.gz.sha256").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing local build output"):
+                release.local_archives(source, "aui", "a" * 40, destination, {f"aui-{release.TARGETS[0]}.tar.gz"})
+
     def test_published_source_version_rejects_a_different_revision(self):
         with patch.object(release, "release", return_value={"isDraft": False}), patch.object(release, "gh_json", return_value=[{"ref": "refs/tags/homebrew-v0.1.0"}]), patch.object(release, "source_revision", side_effect=["a" * 40, "b" * 40]):
             with self.assertRaisesRegex(ValueError, "different source revision"):

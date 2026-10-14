@@ -73,7 +73,41 @@ def checksums(path):
     return entries
 
 
-def build(project, version, ref):
+def workflow_archives(repo, project, tag, revision, directory):
+    query = ("run", "list", "--repo", repo, "--workflow", "release.yml", "--branch", tag,
+             "--limit", "5", "--json", "databaseId,status,conclusion,headSha")
+    runs = gh_json(*query)
+    if not runs or runs[0]["conclusion"] not in ("", "success"):
+        run("gh", "workflow", "run", "release.yml", "--repo", repo, "--ref", tag, capture=False)
+        for _ in range(30):
+            runs = gh_json(*query)
+            if runs and runs[0]["status"] != "completed":
+                break
+            time.sleep(2)
+        else:
+            raise RuntimeError("The dispatched release build did not appear")
+    workflow = runs[0]
+    if workflow["headSha"] != revision:
+        raise ValueError("Workflow source does not match the frozen release tag")
+    run("gh", "run", "watch", str(workflow["databaseId"]), "--repo", repo, "--interval", "15", "--exit-status", capture=False)
+    run("gh", "run", "download", str(workflow["databaseId"]), "--repo", repo,
+        "--pattern", project + "-*", "--dir", str(directory), capture=False)
+
+
+def local_archives(source, project, revision, directory, expected):
+    for name in expected:
+        archive = source / name
+        for path in (archive, archive.with_name(name + ".sha256")):
+            if not path.is_file():
+                raise ValueError("Missing local build output: " + path.name)
+            shutil.copy2(path, directory / path.name)
+        with tarfile.open(archive, "r:gz") as contents:
+            metadata = json.load(contents.extractfile("release.json"))
+        if metadata["project"] != project or not name.endswith(f"-{metadata['target']}.tar.gz") or metadata["source_revision"] != revision:
+            raise ValueError("Local archive provenance mismatch: " + name)
+
+
+def build(project, version, ref, archives=None):
     repo = "kristalalfred/" + project
     tag = "homebrew-v" + version
     current = release(repo, tag)
@@ -92,44 +126,32 @@ def build(project, version, ref):
     if current and not current["isDraft"]:
         print(f"Private release already exists: {repo}/{tag}")
         return
-    query = ("run", "list", "--repo", repo, "--workflow", "release.yml", "--branch", tag,
-             "--limit", "5", "--json", "databaseId,status,conclusion,headSha")
-    runs = gh_json(*query)
-    if not runs or runs[0]["conclusion"] not in ("", "success"):
-        run("gh", "workflow", "run", "release.yml", "--repo", repo, "--ref", tag, capture=False)
-        for _ in range(30):
-            runs = gh_json(*query)
-            if runs and runs[0]["status"] != "completed":
-                break
-            time.sleep(2)
-        else:
-            raise RuntimeError("The dispatched release build did not appear")
-    workflow = runs[0]
-    if workflow["headSha"] != revision:
-        raise ValueError("Workflow source does not match the frozen release tag")
-    run("gh", "run", "watch", str(workflow["databaseId"]), "--repo", repo, "--interval", "15", "--exit-status", capture=False)
     directory = ROOT / ".dist" / project / version / "build"
     if directory.exists():
         shutil.rmtree(directory)
     directory.mkdir(parents=True, exist_ok=True)
-    run("gh", "run", "download", str(workflow["databaseId"]), "--repo", repo,
-        "--pattern", project + "-*", "--dir", str(directory), capture=False)
-    archives = sorted(directory.rglob("*.tar.gz"))
     expected = {f"{project}-{target}.tar.gz" for target in TARGETS}
     if project == "ronna":
         expected.update(f"ronna-server-{target}.tar.gz" for target in TARGETS)
-    if {path.name for path in archives} != expected or len(archives) != len(expected):
+    if archives:
+        local_archives(Path(archives), project, revision, directory, expected)
+        origin = "Native binaries built locally from source revision "
+    else:
+        workflow_archives(repo, project, tag, revision, directory)
+        origin = "Native binaries from source revision "
+    built = sorted(directory.rglob("*.tar.gz"))
+    if {path.name for path in built} != expected or len(built) != len(expected):
         raise ValueError("The native build did not produce all expected archives")
-    for archive in archives:
+    for archive in built:
         if checksums(archive.with_name(archive.name + ".sha256"))[archive.name] != digest(archive):
             raise ValueError("Build checksum mismatch: " + archive.name)
     checksum_file = directory / "SHA256SUMS"
-    checksum_file.write_text("".join(digest(path) + "  " + path.name + "\n" for path in archives))
+    checksum_file.write_text("".join(digest(path) + "  " + path.name + "\n" for path in built))
     if not current:
         run("gh", "release", "create", tag, "--repo", repo, "--verify-tag", "--draft",
-            "--title", f"{project} {version}", "--notes", "Native binaries from source revision " + revision)
+            "--title", f"{project} {version}", "--notes", origin + revision)
     run("gh", "release", "upload", tag, "--repo", repo, "--clobber",
-        *(str(path) for path in archives), str(checksum_file), capture=False)
+        *(str(path) for path in built), str(checksum_file), capture=False)
     run("gh", "release", "edit", tag, "--repo", repo, "--draft=false", capture=False)
     print(f"Stored native archives in private release {repo}/{tag}")
 
@@ -274,11 +296,12 @@ def main():
     parser.add_argument("project", choices=tuple(BINARIES))
     parser.add_argument("version")
     parser.add_argument("--ref")
+    parser.add_argument("--archives", help="directory of locally built archives to store instead of running the release workflow")
     args = parser.parse_args()
     if not re.fullmatch(r"\d+\.\d+\.\d+", args.version):
         parser.error("version must be a stable major.minor.patch version")
     if args.action == "build":
-        build(args.project, args.version, args.ref)
+        build(args.project, args.version, args.ref, args.archives)
     elif args.action == "prepare":
         prepare(args.project, args.version)
     else:

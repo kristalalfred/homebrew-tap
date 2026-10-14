@@ -6,8 +6,8 @@ check:
     {{python}} -m unittest discover -s scripts -p '*test.py'
     actionlint
 
-build project version ref="":
-    {{python}} scripts/release.py build '{{project}}' '{{version}}' {{if ref == "" { "" } else { "--ref '" + ref + "'" }}}
+build project version ref="" archives="":
+    {{python}} scripts/release.py build '{{project}}' '{{version}}' {{if ref == "" { "" } else { "--ref '" + ref + "'" }}} {{if archives == "" { "" } else { "--archives '" + archives + "'" }}}
 
 prepare project version:
     {{python}} scripts/release.py prepare '{{project}}' '{{version}}'
