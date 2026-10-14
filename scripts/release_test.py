@@ -83,8 +83,31 @@ class ReleaseTests(unittest.TestCase):
             for target in release.TARGETS:
                 self.assertIn(assets[target]["url"], formula)
                 self.assertIn(assets[target]["sha256"], formula)
-            if project != "exo":
-                self.assertIn('depends_on "kristalalfred/tap/exo"', formula)
+            if release.DEPENDENCIES[project]:
+                self.assertIn(f'depends_on "kristalalfred/tap/{release.DEPENDENCIES[project]}"', formula)
+            else:
+                self.assertNotIn("depends_on \"kristalalfred", formula)
+
+    def test_client_without_exo_runtime_dependency_prepares_against_its_own_dependency(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "Formula").mkdir()
+            (root / "releases").mkdir()
+            (root / "releases/exo.json").write_text(json.dumps({"source_revision": "c" * 40}))
+
+            def download(*args, **kwargs):
+                destination = Path(args[args.index("--dir") + 1])
+                archives = [self.archive(destination, target, "aui") for target in release.TARGETS]
+                (destination / "SHA256SUMS").write_text("".join(
+                    release.digest(path) + "  " + path.name + "\n" for path in archives))
+
+            with patch.object(release, "ROOT", root), patch.object(release, "source_revision", return_value="a" * 40), patch.object(release, "run", side_effect=download):
+                release.prepare("aui", "0.1.0")
+            formula = (root / "Formula/aui.rb").read_text()
+            self.assertIn('depends_on "kristalalfred/tap/ronna"', formula)
+            self.assertNotIn('depends_on "kristalalfred/tap/exo"', formula)
+            self.assertIn("license :cannot_represent", formula)
+            self.assertEqual(json.loads((root / "releases/aui.json").read_text())["release_tag"], "aui-v0.1.0")
 
     def test_published_source_version_rejects_a_different_revision(self):
         with patch.object(release, "release", return_value={"isDraft": False}), patch.object(release, "gh_json", return_value=[{"ref": "refs/tags/homebrew-v0.1.0"}]), patch.object(release, "source_revision", side_effect=["a" * 40, "b" * 40]):

@@ -1,15 +1,15 @@
 # kristalalfred/tap
 
-Homebrew formulae for Exo, Ramp, Ronna, and facetty.
+Homebrew formulae for Exo, Ramp, Ronna, aui, and facetty.
 
 ## Install
 
 ```sh
-brew install kristalalfred/tap/ramp kristalalfred/tap/ronna
+brew install kristalalfred/tap/aui
 ```
 
-Ramp and Ronna depend on `kristalalfred/tap/exo`, which provides `exo` and
-`exod`. To install the runtime alone:
+aui depends on `kristalalfred/tap/ronna`. Ramp and Ronna depend on
+`kristalalfred/tap/exo`, which provides `exo` and `exod`. To install the runtime alone:
 
 ```sh
 brew install kristalalfred/tap/exo
@@ -32,9 +32,14 @@ distributed under the MIT license.
 
 ## Ronna
 
-`ronna` connects Ramp to Ronna coding sessions and native runners. Ronna is
+`ronna` connects clients to Ronna coding sessions and native runners. Ronna is
 closed source. Its public packages contain the client binary; server binaries
 remain in the private source repository.
+
+## aui
+
+`aui` is the Lua-customizable terminal client for Ronna. It uses the installed
+`ronna` CLI for sign-in and workspace selection. aui is closed source.
 
 ## Publish a release
 
@@ -48,6 +53,7 @@ Run `just check`, then build each project at its release commit:
 just build exo 0.1.0 <exo-commit>
 just build ramp 0.1.0 <ramp-commit>
 just build ronna 0.1.0 <ronna-commit>
+just build aui 0.1.0 <aui-commit>
 ```
 
 The source's Cargo version must match the requested version. The build command
@@ -61,6 +67,7 @@ Prepare the runtime before its clients:
 just prepare exo 0.1.0
 just prepare ramp 0.1.0
 just prepare ronna 0.1.0
+just prepare aui 0.1.0
 ```
 
 Preparation verifies checksums, source revisions, platforms, and the clients'
@@ -69,13 +76,14 @@ the public archives. Generated formulae and provenance records live in
 `Formula/` and `releases/`; private downloads and prepared archives stay in the
 ignored `.dist/` directory.
 
-Review the files, run `just check` and `brew style Formula/{exo,ramp,ronna}.rb`,
+Review the files, run `just check` and `brew style Formula/{exo,ramp,ronna,aui}.rb`,
 then commit and push them to this repository before publishing:
 
 ```sh
 just publish exo 0.1.0
 just publish ramp 0.1.0
 just publish ronna 0.1.0
+just publish aui 0.1.0
 just ci
 ```
 

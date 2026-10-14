@@ -21,12 +21,15 @@ TARGETS = (
     "aarch64-apple-darwin", "x86_64-apple-darwin",
     "aarch64-unknown-linux-gnu", "x86_64-unknown-linux-gnu",
 )
-BINARIES = {"exo": ("exo", "exod"), "ramp": ("ramp",), "ronna": ("ronna",)}
+BINARIES = {"exo": ("exo", "exod"), "ramp": ("ramp",), "ronna": ("ronna",), "aui": ("aui",)}
 DESCRIPTIONS = {
     "exo": "Agent runtime and command-line client",
     "ramp": "Programmable terminal frontend for agent harnesses",
     "ronna": "Client for Ronna coding sessions and native runners",
+    "aui": "Lua-customizable terminal client for Ronna",
 }
+DEPENDENCIES = {"exo": None, "ramp": "exo", "ronna": "exo", "aui": "ronna"}
+CLOSED_SOURCE = {"ronna", "aui"}
 
 
 def run(*args, capture=True):
@@ -163,9 +166,9 @@ def repackage(source, destination, project, version, target, revision):
 def formula(project, version, assets):
     lines = [f"class {project.capitalize()} < Formula", f'  desc "{DESCRIPTIONS[project]}"',
              f'  homepage "https://github.com/{TAP}#{project}"',
-             '  license :cannot_represent' if project == "ronna" else '  license "MIT"']
-    if project != "exo":
-        lines.extend(["", '  depends_on "kristalalfred/tap/exo"'])
+             '  license :cannot_represent' if project in CLOSED_SOURCE else '  license "MIT"']
+    if DEPENDENCIES[project]:
+        lines.extend(["", f'  depends_on "kristalalfred/tap/{DEPENDENCIES[project]}"'])
     for system, suffix in (("macos", "apple-darwin"), ("linux", "unknown-linux-gnu")):
         lines.extend(["", f"  on_{system} do"])
         if system == "macos":
@@ -219,7 +222,7 @@ def prepare(project, version):
     if project == "exo":
         if metadata["exo_revision"] != revision:
             raise ValueError("Exo archive does not describe its own source revision")
-    else:
+    elif DEPENDENCIES[project] == "exo":
         runtime = json.loads((ROOT / "releases/exo.json").read_text())
         if runtime["source_revision"] != metadata["exo_revision"]:
             raise ValueError("Publish the matching Exo runtime before preparing this client")
