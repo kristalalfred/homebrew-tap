@@ -9,27 +9,27 @@ class Ronna < Formula
     depends_on macos: :monterey
 
     on_arm do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.2/ronna-aarch64-apple-darwin.tar.gz"
-      sha256 "3669544cd5d35a1b83422427037b0ef52986fb9556bdc1110b2c4384aa9c06ee"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-aarch64-apple-darwin.tar.gz"
+      sha256 "2f6c583d7790657a1d5f9ed9b09be343d570c27d3ab68cce82025dec4685b197"
     end
 
     on_intel do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.2/ronna-x86_64-apple-darwin.tar.gz"
-      version "0.1.2"
-      sha256 "f42dc896117bafc5344da9f191a6d43f240eaf73c8332d00b4c003bda6733223"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-x86_64-apple-darwin.tar.gz"
+      version "0.1.3"
+      sha256 "73b0809efed2e97b63adb4214fce620dcb3991e02befab37aa1bad6fb53556e1"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.2/ronna-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "f64e46bb680df88b41a8078ea166bb8c5b68abaa8b4575e4bc3af00cb4b07d83"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "dabf854cdb606d92683617c14bf33909b162499c264475cc5953f667272f2427"
     end
 
     on_intel do
-      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.2/ronna-x86_64-unknown-linux-gnu.tar.gz"
-      version "0.1.2"
-      sha256 "559fd7a8bc045a945e8c40933a36266055fa92be7bc2b3f7de10f25eed4f6b22"
+      url "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-x86_64-unknown-linux-gnu.tar.gz"
+      version "0.1.3"
+      sha256 "7532bc68f573e2b6da342510735ad14f8c33741857a8e2b988d4f868e684e31b"
     end
   end
 
