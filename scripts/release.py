@@ -21,15 +21,16 @@ TARGETS = (
     "aarch64-apple-darwin", "x86_64-apple-darwin",
     "aarch64-unknown-linux-gnu", "x86_64-unknown-linux-gnu",
 )
-BINARIES = {"exo": ("exo", "exod"), "ramp": ("ramp",), "ronna": ("ronna",), "aui": ("aui",)}
+BINARIES = {"exo": ("exo", "exod"), "ramp": ("ramp",), "ronna": ("ronna",), "aui": ("aui",), "ws": ("ws",)}
 DESCRIPTIONS = {
     "exo": "Agent runtime and command-line client",
     "ramp": "Programmable terminal frontend for agent harnesses",
-    "ronna": "Client for Ronna coding sessions and native runners",
+    "ronna": "Command-line client for Ronna team workspaces",
     "aui": "Lua-customizable terminal client for Ronna",
+    "ws": "Ronna workspaces as Rex hosts",
 }
-DEPENDENCIES = {"exo": None, "ramp": "exo", "ronna": "exo", "aui": "ronna"}
-CLOSED_SOURCE = {"ronna", "aui"}
+DEPENDENCIES = {"exo": None, "ramp": "exo", "ronna": None, "aui": "ronna", "ws": "ronna"}
+CLOSED_SOURCE = {"ronna", "aui", "ws"}
 
 
 def run(*args, capture=True):
@@ -120,7 +121,8 @@ def build(project, version, ref, archives=None):
         raise ValueError("The release tag already refers to a different source revision")
     manifest = "code/Cargo.toml" if project == "ronna" else "Cargo.toml"
     content = gh_json("api", f"repos/{repo}/contents/{manifest}?ref={tag}")
-    package_version = tomllib.loads(base64.b64decode(content["content"]).decode())["workspace"]["package"]["version"]
+    cargo = tomllib.loads(base64.b64decode(content["content"]).decode())
+    package_version = cargo.get("workspace", {}).get("package", cargo.get("package", {})).get("version")
     if package_version != version:
         raise ValueError(f"Source version is {package_version}, requested {version}")
     if current and not current["isDraft"]:
@@ -237,7 +239,7 @@ def prepare(project, version):
         if expected.get(name) != digest(source):
             raise ValueError("Private release checksum mismatch: " + name)
         current = repackage(source, public / name, project, version, target, revision)
-        if metadata and current["exo_revision"] != metadata["exo_revision"]:
+        if metadata and current.get("exo_revision") != metadata.get("exo_revision"):
             raise ValueError("Different Exo revisions across native builds")
         metadata = current
         assets[target] = {"url": f"https://github.com/{TAP}/releases/download/{tag}/{name}", "sha256": digest(public / name)}
@@ -249,9 +251,10 @@ def prepare(project, version):
         if runtime["source_revision"] != metadata["exo_revision"]:
             raise ValueError("Publish the matching Exo runtime before preparing this client")
     public.joinpath("SHA256SUMS").write_text("".join(assets[target]["sha256"] + f"  {project}-{target}.tar.gz\n" for target in TARGETS))
-    record = {"project": project, "version": version, "source_revision": revision,
-              "exo_revision": metadata["exo_revision"], "source_tag": source_tag,
-              "release_tag": tag, "assets": assets}
+    record = {"project": project, "version": version, "source_revision": revision}
+    if metadata.get("exo_revision"):
+        record["exo_revision"] = metadata["exo_revision"]
+    record.update(source_tag=source_tag, release_tag=tag, assets=assets)
     (ROOT / "releases").mkdir(exist_ok=True)
     (ROOT / f"releases/{project}.json").write_text(json.dumps(record, indent=2) + "\n")
     (ROOT / f"Formula/{project}.rb").write_text(formula(project, version, assets))
@@ -283,7 +286,7 @@ def publish(project, version):
         return
     if not existing:
         run("gh", "release", "create", tag, "--repo", TAP, "--target", commit, "--draft",
-            "--title", f"{project} {version}", "--notes", "Native macOS and Linux binaries for arm64 and x86_64. Install through kristalalfred/tap; Lua plugins are installed separately through Git.")
+            "--title", f"{project} {version}", "--notes", "Native macOS and Linux binaries for arm64 and x86_64. Install through kristalalfred/tap.")
     run("gh", "release", "upload", tag, "--repo", TAP, "--clobber",
         *(str(public / f"{project}-{target}.tar.gz") for target in TARGETS), str(public / "SHA256SUMS"), capture=False)
     run("gh", "release", "edit", tag, "--repo", TAP, "--draft=false", capture=False)

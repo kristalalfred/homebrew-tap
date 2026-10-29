@@ -10,10 +10,11 @@ import release
 
 
 class ReleaseTests(unittest.TestCase):
-    def archive(self, root, target, project="ronna", revision="a" * 40):
+    def archive(self, root, target, project="ronna", revision="a" * 40, runtime=True):
         path = root / (project + "-" + target + ".tar.gz")
-        metadata = {"project": project, "target": target,
-                    "source_revision": revision, "exo_revision": "b" * 40}
+        metadata = {"project": project, "target": target, "source_revision": revision}
+        if runtime:
+            metadata["exo_revision"] = "b" * 40
         files = {"bin/" + binary: b"native executable" for binary in release.BINARIES[project]}
         files.update({"bin/exo": b"bundled runtime", "bin/exod": b"bundled daemon",
                       "share/ramp/ronna/plugin/ronna.lua": b"private bundled Lua",
@@ -59,7 +60,7 @@ class ReleaseTests(unittest.TestCase):
             for invalid_checksum in (True, False):
                 def download(*args, **kwargs):
                     destination = Path(args[args.index("--dir") + 1])
-                    archives = [self.archive(destination, target) for target in release.TARGETS]
+                    archives = [self.archive(destination, target, "ramp") for target in release.TARGETS]
                     (destination / "SHA256SUMS").write_text("".join(
                         ("0" * 64 if invalid_checksum else release.digest(path)) + "  " + path.name + "\n"
                         for path in archives))
@@ -67,9 +68,9 @@ class ReleaseTests(unittest.TestCase):
                 with patch.object(release, "ROOT", root), patch.object(release, "source_revision", return_value="a" * 40), patch.object(release, "run", side_effect=download):
                     error = "checksum mismatch" if invalid_checksum else "matching Exo runtime"
                     with self.assertRaisesRegex(ValueError, error):
-                        release.prepare("ronna", "0.1.0")
-                self.assertFalse((root / "Formula/ronna.rb").exists())
-                self.assertFalse((root / "releases/ronna.json").exists())
+                        release.prepare("ramp", "0.1.0")
+                self.assertFalse((root / "Formula/ramp.rb").exists())
+                self.assertFalse((root / "releases/ramp.json").exists())
             checksum = root / "bad-checksums"
             checksum.write_text("a" * 64 + "  ../../secret\n")
             with self.assertRaisesRegex(ValueError, "Invalid checksum"):
@@ -108,6 +109,30 @@ class ReleaseTests(unittest.TestCase):
             self.assertNotIn('depends_on "kristalalfred/tap/exo"', formula)
             self.assertIn("license :cannot_represent", formula)
             self.assertEqual(json.loads((root / "releases/aui.json").read_text())["release_tag"], "aui-v0.1.0")
+
+    def test_clients_without_a_runtime_prepare_without_exo(self):
+        for project, dependency in (("ronna", None), ("ws", "ronna")):
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "Formula").mkdir()
+                (root / "releases").mkdir()
+
+                def download(*args, **kwargs):
+                    destination = Path(args[args.index("--dir") + 1])
+                    archives = [self.archive(destination, target, project, runtime=False) for target in release.TARGETS]
+                    (destination / "SHA256SUMS").write_text("".join(
+                        release.digest(path) + "  " + path.name + "\n" for path in archives))
+
+                with patch.object(release, "ROOT", root), patch.object(release, "source_revision", return_value="a" * 40), patch.object(release, "run", side_effect=download):
+                    release.prepare(project, "0.2.0")
+                formula = (root / f"Formula/{project}.rb").read_text()
+                record = json.loads((root / f"releases/{project}.json").read_text())
+                self.assertNotIn('depends_on "kristalalfred/tap/exo"', formula)
+                if dependency:
+                    self.assertIn(f'depends_on "kristalalfred/tap/{dependency}"', formula)
+                self.assertIn("license :cannot_represent", formula)
+                self.assertIn(f'shell_output("#{{bin}}/{project} --version")', formula)
+                self.assertNotIn("exo_revision", record)
 
     def test_local_archives_must_come_from_the_frozen_revision(self):
         with tempfile.TemporaryDirectory() as directory:
