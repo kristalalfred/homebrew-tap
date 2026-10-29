@@ -1,0 +1,25 @@
+{
+  "project": "ws",
+  "version": "0.1.0",
+  "source_revision": "794f7c01f4a08d6f83c59d608a8477a9293905c7",
+  "source_tag": "homebrew-v0.1.0",
+  "release_tag": "ws-v0.1.0",
+  "assets": {
+    "aarch64-apple-darwin": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ws-v0.1.0/ws-aarch64-apple-darwin.tar.gz",
+      "sha256": "d5640f04cb84dcb8d6000ec2a8db494371d0ab63f568ab52c8c7e548e832fad7"
+    },
+    "x86_64-apple-darwin": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ws-v0.1.0/ws-x86_64-apple-darwin.tar.gz",
+      "sha256": "4f8477818097a23400772464529c4bc7178eaa9b9601064b67e717211ccc9da2"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ws-v0.1.0/ws-aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "f22a9c57e5e2f3191aea82111f472fda46ee02add6072648613f724b757d389c"
+    },
+    "x86_64-unknown-linux-gnu": {
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ws-v0.1.0/ws-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "dae3cd92bdaa76ee92d2fc15431e2efa370b21399c5c7ce47f05a236907f67a6"
+    }
+  }
+}

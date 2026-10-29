@@ -1,26 +1,25 @@
 {
   "project": "ronna",
-  "version": "0.1.3",
-  "source_revision": "8c5d16a1a2918e302c39ab4bb2b72c09e5f9734e",
-  "exo_revision": "f569c585bb97a2fff63e338b856d127fc0c40217",
-  "source_tag": "homebrew-v0.1.3",
-  "release_tag": "ronna-v0.1.3",
+  "version": "0.2.0",
+  "source_revision": "bb8af695cb8f9afb7b9ec61ff7542ff60b7f1055",
+  "source_tag": "homebrew-v0.2.0",
+  "release_tag": "ronna-v0.2.0",
   "assets": {
     "aarch64-apple-darwin": {
-      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-aarch64-apple-darwin.tar.gz",
-      "sha256": "2f6c583d7790657a1d5f9ed9b09be343d570c27d3ab68cce82025dec4685b197"
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.2.0/ronna-aarch64-apple-darwin.tar.gz",
+      "sha256": "7f750cc99378211a46e4c24128cfc91a9b502681075608d314957944f5165cf4"
     },
     "x86_64-apple-darwin": {
-      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-x86_64-apple-darwin.tar.gz",
-      "sha256": "73b0809efed2e97b63adb4214fce620dcb3991e02befab37aa1bad6fb53556e1"
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.2.0/ronna-x86_64-apple-darwin.tar.gz",
+      "sha256": "a2f66715e375eab478856d977e439f8fedca3430cc7591d87ad415f7056700c1"
     },
     "aarch64-unknown-linux-gnu": {
-      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-aarch64-unknown-linux-gnu.tar.gz",
-      "sha256": "dabf854cdb606d92683617c14bf33909b162499c264475cc5953f667272f2427"
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.2.0/ronna-aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "31f7016bcb1f726b974a2899b85fb2800829b7f0810880e9a48680bb018e59d2"
     },
     "x86_64-unknown-linux-gnu": {
-      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.1.3/ronna-x86_64-unknown-linux-gnu.tar.gz",
-      "sha256": "7532bc68f573e2b6da342510735ad14f8c33741857a8e2b988d4f868e684e31b"
+      "url": "https://github.com/kristalalfred/homebrew-tap/releases/download/ronna-v0.2.0/ronna-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "862750991c54b065729dca73838ff08eb7d6c73b0ae090e4def3bbb5123fb66a"
     }
   }
 }
